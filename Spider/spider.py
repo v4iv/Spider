@@ -35,9 +35,9 @@ class Spider:
     @staticmethod
     def crawl_page(thread_name, page_url):
         if page_url not in Spider.crawled_set:
-            print(thread_name + ' now crawling ' + page_url)
-            print('In Queue : ' + str(len(Spider.queue_set)) + ' | Crawled : ' + str(len(Spider.crawled_set)))
-            Spider.add_links_to_queue(Spider.gather_links())
+            print(thread_name + ' now crawling ' + page_url + '\n')
+            print('| In Queue : ' + str(len(Spider.queue_set)) + ' | Crawled : ' + str(len(Spider.crawled_set)))
+            Spider.add_links_to_queue(Spider.gather_links(page_url))
             Spider.queue_set.remove(page_url)
             Spider.crawled_set.add(page_url)
             Spider.update_files()
@@ -48,7 +48,8 @@ class Spider:
         html_string = ''
         try:
             response = urlopen(page_url)
-            if response.getheader('Content-Type') == 'text/html':
+            if response.getheader('Content-Type') == 'text/html' or \
+ +                    response.getheader('content-type') == 'text/html;charset=utf-8':
                 html_bytes = response.read()
                 html_string = html_bytes.decode(encoding='utf-8')
             finder = LinkFinder(Spider.base_url, page_url)
@@ -72,5 +73,5 @@ class Spider:
 
     @staticmethod
     def update_files():
-        set_to_file(queue_set, Spider.queue_file)
-        set_to_file(crawled_set, Spider.crawled_file)
+        set_to_file(Spider.queue_set, Spider.queue_file)
+        set_to_file(Spider.crawled_set, Spider.crawled_file)
