@@ -31,6 +31,16 @@ def delete_file_contents(path):
     with open(path, 'w'):
         pass
 
+
+def remove_data_files(project_name, base_url):
+    queue = project_name + '/queue.txt'
+    crawled = project_name + '/crawled.txt'
+    if os.path.isfile(queue):
+        os.remove(queue)
+    if os.path.isfile(crawled):
+        os.remove(crawled)
+
+
 # Create Set from File
 def file_to_set(file_name):
     url_set = set()

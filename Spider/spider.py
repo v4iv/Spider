@@ -1,6 +1,7 @@
 from urllib.request import urlopen
 from link_finder import LinkFinder
 from general import *
+from xdomain import *
 
 class Spider:
 
@@ -36,7 +37,7 @@ class Spider:
     def crawl_page(thread_name, page_url):
         if page_url not in Spider.crawled_set:
             print(thread_name + ' now crawling ' + page_url + '\n')
-            print('| In Queue : ' + str(len(Spider.queue_set)) + ' | Crawled : ' + str(len(Spider.crawled_set)))
+            print('In Queue : ' + str(len(Spider.queue_set)) + ' | Crawled : ' + str(len(Spider.crawled_set)))
             Spider.add_links_to_queue(Spider.gather_links(page_url))
             Spider.queue_set.remove(page_url)
             Spider.crawled_set.add(page_url)
@@ -48,14 +49,16 @@ class Spider:
         html_string = ''
         try:
             response = urlopen(page_url)
-            if response.getheader('Content-Type') == 'text/html' or \
- +                    response.getheader('content-type') == 'text/html;charset=utf-8':
+            if response.getheader('Content-Type') == 'text/html':
+                html_bytes = response.read()
+                html_string = html_bytes.decode(encoding='utf-8')
+            elif response.getheader('content-type') == 'text/html;charset=utf-8':
                 html_bytes = response.read()
                 html_string = html_bytes.decode(encoding='utf-8')
             finder = LinkFinder(Spider.base_url, page_url)
             finder.feed(html_string)
-        except:
-            print('Error : Cannot Crawl Page!')
+        except Exception as e:
+            print('\nException : ' + str(e) + '\n')
             return set()
         return finder.page_links()
 
@@ -63,11 +66,9 @@ class Spider:
     @staticmethod
     def add_links_to_queue(links):
         for url in links:
-            if url in Spider.queue_set:
+            if (url in Spider.queue_set) or (url in Spider.crawled_set):
                 continue
-            if url in Spider.crawled_set:
-                continue
-            if Spider.domain_name not in url:
+            if Spider.domain_name != get_domain(url):
                 continue
             Spider.queue_set.add(url)
 
