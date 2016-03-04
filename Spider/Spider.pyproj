@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>84c832ca-f15a-4631-8d0c-52c45e5bc6c7</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>main.py</StartupFile>
+    <StartupFile>aragog.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
@@ -31,7 +31,7 @@
     <Compile Include="link_finder.py">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="main.py">
+    <Compile Include="aragog.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="spider.py">
